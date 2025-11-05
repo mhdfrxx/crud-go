@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Go First!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+
+<body>
+    <!--Navbar-->
+
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <div class="container">
+            <a class="navbar-brand text-light" href="/">Products</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" href="/products">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" href="/categories">Categories</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!--End Of Navbar-->
+
+    <!--Content-->
+    <div class="container mt-3">
+        <h2>List Products</h2>
+        <hr>
+        <a href="/products/add" class="btn btn-primary">Add Product</a>
+        <div class="float-end">
+            <input type="text" id="filterInput" onkeyup="filterTable()" placeholder="Search...">
+        </div>
+        <table class="table table-bordered mt-2 text-center" id="myTable">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Category</td>
+                    <td>Stock</td> 
+                    <td>Action</td>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .products}}
+                <tr>
+                    <td>{{.Name}}</td>
+                    <td>{{.Category.Name}}</td>
+                    <td>{{.Stock}}</td>
+                    <td>
+                        <a href="/products/detail?id={{ .Id }}" class="btn btn-info text-light">Detail</a>
+                        <a href="/products/edit?id={{ .Id }}" class="btn btn-warning text-light">Edit</a>
+                        <a href="/products/delete?id={{.Id}}" class="btn btn-danger text-light"
+                            onclick="return confirm('Are you sure delete this category ?')">Delete</a>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+<script>
+        function filterTable() {
+        // Get the value from the input field and convert it to uppercase for case-insensitive matching.
+        let input = document.getElementById('filterInput');
+        let filter = input.value.toUpperCase();
+
+        // Get the table and its rows.
+        let table = document.getElementById('myTable');
+        let tr = table.getElementsByTagName('tr');
+
+        // Loop through all table rows, starting from the second row (index 1) to skip the header.
+        for (let i = 1; i < tr.length; i++) {
+            let td = tr[i].getElementsByTagName('td'); // Get all cells in the current row.
+            let match = false; // Flag to indicate if a match is found in the current row.
+
+            // Loop through all cells in the current row.
+            for (let j = 0; j < td.length; j++) {
+                let cellText = td[j].textContent || td[j].innerText; // Get the text content of the cell.
+                if (cellText.toUpperCase().includes(filter)) {
+                    match = true;
+                    break; // No need to check further cells in this row if a match is found.
+                }
+            }
+
+            // Show or hide the row based on whether a match was found.
+            if (match) {
+                tr[i].style.display = ''; // Display the row.
+            } else {
+                tr[i].style.display = 'none'; // Hide the row.
+            }
+        }
+    }
+</script>
+
+</html>
